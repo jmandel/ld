@@ -1,0 +1,12 @@
+{
+  "name": "ld",
+  "module": "index.js",
+  "type": "module",
+  "devDependencies": {
+    "@flydotio/dockerfile": "latest",
+    "bun-types": "latest"
+  },
+  "dependencies": {
+    "node-html-parser": "^6.1.12"
+  }
+}

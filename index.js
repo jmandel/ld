@@ -47,7 +47,7 @@ Bun.serve({
     fetch(request) {
         // Extract the URL parameter from the request
         const urlParams = new URL(request.url).searchParams;
-        const targetUrl = urlParams.get('url');
+        const targetUrl = urlParams.get('url') || urlParams.keys().next().value
 
         // Check if the URL parameter is provided
         if (!targetUrl) {

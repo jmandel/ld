@@ -10,9 +10,13 @@ async function extractJsonLD(url) {
         const root = parse(html);
 
         const jsonLdScripts = root.querySelectorAll('script[type="application/ld+json"]');
-        const jsonLdContents = jsonLdScripts.map(script => JSON.parse(script.textContent)).flatMap(j => j["@graph"] || [j]);
-        const recipeExists = jsonLdContents.some(j => j["@type"] === "Recipe");
+        let jsonLdContents = [];
 
+        try {
+          jsonLdContents = jsonLdScripts.map(script => JSON.parse(script.textContent)).flatMap(j => j["@graph"] || [j]);
+        } catch {}
+
+        const recipeExists = jsonLdContents.some(j => j["@type"] === "Recipe");
         if (!recipeExists) {
             const textContent = extractVisibleText(root);
             return { fallback: true, data: textContent.trim() };

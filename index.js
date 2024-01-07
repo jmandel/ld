@@ -10,15 +10,15 @@ async function extractJsonLD(url) {
         const root = parse(html);
 
         const jsonLdScripts = root.querySelectorAll('script[type="application/ld+json"]');
-        if (jsonLdScripts.length === 0) {
+        const jsonLdContents = jsonLdScripts.map(script => JSON.parse(script.textContent)).flatMap(j => j["@graph"] || [j]);
+        const recipeExists = jsonLdContents.some(j => j["@type"] === "Recipe");
+
+        if (!recipeExists) {
             const textContent = extractVisibleText(root);
             return { fallback: true, data: textContent.trim() };
         }
 
-        const jsonLdContents = jsonLdScripts.map(script => JSON.parse(script.textContent));
-
-        // Return the array of parsed JSON-LD objects
-        return { fallback: false, data: jsonLdContents };
+        return { fallback: false, data: {"@graph": jsonLdContents}};
     } catch (error) {
         console.error('Error extracting content:', error);
         return { fallback: true, data: 'Error occurred while fetching or parsing content. You may wish to run a web search to find this content.' };
